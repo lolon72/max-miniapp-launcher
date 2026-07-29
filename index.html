@@ -1,1 +1,207 @@
-<!doctype html><html lang='ru'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>MAX Launcher</title><link rel='stylesheet' href='css/style.css'><script src='https://st.max.ru/js/max-web-app.js'></script></head><body><div class='card'><h2>MAX MiniApp Launcher</h2><div id='status'>Инициализация...</div><div id='profile'></div><button id='openBtn'>Открыть приложение</button></div><script src='js/config.js'></script><script src='js/max-api.js'></script><script src='js/ui.js'></script><script src='js/app.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>MAX MiniApp Launcher</title>
+
+    <meta
+        name="description"
+        content="MAX MiniApp Launcher">
+
+    <meta
+        name="theme-color"
+        content="#0F62FE">
+
+    <!-- MAX WebApp Bridge -->
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+
+<main class="app">
+
+    <section class="card">
+
+        <!-- ===================================================== -->
+        <!-- Header -->
+        <!-- ===================================================== -->
+
+        <header class="card__header">
+
+            <div class="logo">
+
+                <div class="logo__icon">
+                    M
+                </div>
+
+                <div class="logo__text">
+
+                    <h1 class="logo__title">
+                        MAX Launcher
+                    </h1>
+
+                    <p class="logo__subtitle">
+                        Mini Application
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- ===================================================== -->
+        <!-- Status -->
+        <!-- ===================================================== -->
+
+        <section
+            id="statusPanel"
+            class="status status--loading">
+
+            <div class="spinner"></div>
+
+            <div>
+
+                <div class="status__title">
+                    Инициализация
+                </div>
+
+                <div
+                    id="statusText"
+                    class="status__text">
+
+                    Ожидание запуска...
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- User -->
+        <!-- ===================================================== -->
+
+        <section
+            id="userCard"
+            class="user hidden">
+
+            <div class="avatar">
+
+                <span
+                    id="userInitials">
+                    ?
+                </span>
+
+            </div>
+
+            <div class="user__info">
+
+                <h2
+                    id="userName">
+
+                    Пользователь
+
+                </h2>
+
+                <p>
+
+                    ID:
+                    <span id="userId">
+                        —
+                    </span>
+
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- Action -->
+        <!-- ===================================================== -->
+
+        <section class="actions">
+
+            <button
+                id="launchButton"
+                class="button button--primary"
+                disabled>
+
+                Открыть приложение
+
+            </button>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- Error -->
+        <!-- ===================================================== -->
+
+        <section
+            id="errorPanel"
+            class="error hidden">
+
+            <h3>
+
+                Ошибка
+
+            </h3>
+
+            <p id="errorText">
+
+                Неизвестная ошибка.
+
+            </p>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- Footer -->
+        <!-- ===================================================== -->
+
+        <footer class="footer">
+
+            <div>
+
+                Версия
+
+                <span id="appVersion">
+                    0.1.0
+                </span>
+
+            </div>
+
+            <div id="environment">
+
+                DEBUG
+
+            </div>
+
+        </footer>
+
+    </section>
+
+</main>
+
+<!-- ========================================================= -->
+<!-- JavaScript -->
+<!-- ========================================================= -->
+
+<script src="js/config.js"></script>
+<script src="js/logger.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/max-api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
