@@ -1,1 +1,1 @@
-class UI{status(t){status.textContent=t}user(u){user.textContent=`${u.first_name} ${u.last_name} (${u.id})`}}
+class UI{status(t){status.textContent=t}profile(u){profile.innerHTML=`<b>${u.first_name} ${u.last_name||''}</b><br>ID: ${u.id}`}}

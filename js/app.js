@@ -1,1 +1,1 @@
-const api=new MaxApi(),ui=new UI();api.initialize();let u=api.getUser();if(!u&&CONFIG.DEBUG)u=CONFIG.DEBUG_USER;ui.status(u?'Готово':'Нет данных');if(u)ui.user(u);openBtn.onclick=()=>api.openLink(CONFIG.TARGET_URL+'?userId='+encodeURIComponent(u.id));
+const api=new MaxApi(),ui=new UI();(async()=>{await api.init();let u=api.user();if(!u&&CONFIG.DEBUG)u=CONFIG.DEBUG_USER;ui.status(u?'Готово':'Нет пользователя');if(u){ui.profile(u);openBtn.onclick=()=>api.open(CONFIG.TARGET_URL+'?userId='+encodeURIComponent(u.id));}})();
