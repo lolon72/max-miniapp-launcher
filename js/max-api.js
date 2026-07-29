@@ -1,1 +1,1 @@
-class MaxApi{}
+class MaxApi{initialize(){if(window.WebApp?.ready)window.WebApp.ready();}getUser(){return window.WebApp?.initDataUnsafe?.user||null;}openLink(u){if(window.WebApp?.openLink)window.WebApp.openLink(u);else window.open(u,'_blank');}}

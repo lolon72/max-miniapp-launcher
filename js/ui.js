@@ -1,1 +1,1 @@
-class UI{}
+class UI{status(t){status.textContent=t}user(u){user.textContent=`${u.first_name} ${u.last_name} (${u.id})`}}

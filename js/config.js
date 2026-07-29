@@ -1,1 +1,1 @@
-const CONFIG={APP_NAME:'MAX MiniApp Launcher',VERSION:'1.0.0',TARGET_URL:'https://example.ru/app',DEBUG:true};
+const CONFIG={TARGET_URL:'https://example.ru/app',DEBUG:true,DEBUG_USER:{id:10000001,first_name:'Debug',last_name:'User'}};

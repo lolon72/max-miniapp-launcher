@@ -1,3 +1,1 @@
-# MAX MiniApp Launcher
-
-Initial structure.
+# Commit2
