@@ -1,0 +1,1 @@
+const CONFIG={APP_NAME:'MAX MiniApp Launcher',VERSION:'1.0.0',TARGET_URL:'https://example.ru/app',DEBUG:true};
