@@ -12,11 +12,11 @@ class MaxApi {
 
     #webApp = null;
     #initialized = false;
-    #debugMode = false;
+    #debug = false;
     #user = null;
 
     /**
-     * Инициализация API
+     * Инициализация Bridge
      */
     async initialize() {
 
@@ -24,14 +24,13 @@ class MaxApi {
 
         if (typeof window.WebApp === 'undefined') {
 
-            Logger.warn('MAX Bridge not found. DEBUG mode enabled.');
+            Logger.warn('MAX Bridge is unavailable.');
 
-            this.#debugMode = true;
-            this.#user = CONFIG.DEBUG_USER;
+            this.#debug = true;
             this.#initialized = true;
+            this.#user = CONFIG.DEBUG_USER;
 
             return;
-
         }
 
         this.#webApp = window.WebApp;
@@ -39,10 +38,12 @@ class MaxApi {
         try {
 
             if (typeof this.#webApp.ready === 'function') {
+
                 this.#webApp.ready();
+
             }
 
-            this.#user = this.#extractUser();
+            this.#user = this.#readUser();
 
             this.#initialized = true;
 
@@ -53,91 +54,66 @@ class MaxApi {
 
             Logger.exception(error);
 
-            this.#debugMode = true;
-            this.#user = CONFIG.DEBUG_USER;
+            this.#debug = true;
             this.#initialized = true;
+            this.#user = CONFIG.DEBUG_USER;
 
         }
 
     }
 
     /**
-     * Получить пользователя
+     * Чтение пользователя
      */
-    #extractUser() {
+    #readUser() {
 
-        const initData = this.#webApp?.initDataUnsafe;
+        const user =
+            this.#webApp?.initDataUnsafe?.user ?? null;
 
-        if (!initData) {
+        if (!user) {
 
-            Logger.warn('initDataUnsafe is empty.');
+            Logger.warn('User is not available.');
 
             return null;
 
         }
 
-        if (!initData.user) {
+        Logger.debug(user);
 
-            Logger.warn('User not found.');
-
-            return null;
-
-        }
-
-        Logger.debug('User:', initData.user);
-
-        return initData.user;
+        return user;
 
     }
 
-    /**
-     * API доступен
-     */
-    isAvailable() {
-
-        return this.#webApp !== null;
-
-    }
-
-    /**
-     * Приложение инициализировано
-     */
     isInitialized() {
 
         return this.#initialized;
 
     }
 
-    /**
-     * Режим DEBUG
-     */
     isDebug() {
 
-        return this.#debugMode;
+        return this.#debug;
 
     }
 
-    /**
-     * Пользователь
-     */
+    isAvailable() {
+
+        return this.#webApp !== null;
+
+    }
+
     getUser() {
 
         return this.#user;
 
     }
 
-    /**
-     * user.id
-     */
     getUserId() {
 
         return this.#user?.id ?? null;
 
     }
 
-    /**
-     * Полное имя
-     */
     getUserName() {
 
         return Utils.getFullName(this.#user);
@@ -145,35 +121,57 @@ class MaxApi {
     }
 
     /**
-     * Язык пользователя
+     * Формирование URL запуска
      */
-    getLanguage() {
+    buildLaunchUrl() {
 
-        return this.#user?.language_code ?? 'ru';
+        return Utils.createUrl(
+
+            'https://lk-app.bsomsk.ru/applications/lk-client',
+
+            {
+
+                maxUserId: this.getUserId(),
+
+                maxUserName: this.getUserName()
+
+            }
+
+        );
 
     }
 
     /**
-     * Открыть ссылку
+     * Открытие приложения
      */
-    openLink(url) {
+    launch() {
 
-        Logger.info('Open link:', url);
+        const url = this.buildLaunchUrl();
 
-        if (!url) {
-
-            Logger.error('URL is empty.');
-
-            return;
-
-        }
+        Logger.info('Launch:', url);
 
         if (
+
             this.#webApp &&
             typeof this.#webApp.openLink === 'function'
+
         ) {
 
             this.#webApp.openLink(url);
+
+            if (
+
+                typeof this.#webApp.close === 'function'
+
+            ) {
+
+                setTimeout(() => {
+
+                    this.#webApp.close();
+
+                }, 300);
+
+            }
 
             return;
 
@@ -184,56 +182,20 @@ class MaxApi {
     }
 
     /**
-     * Построить URL запуска
-     */
-    buildLaunchUrl() {
-
-    return Utils.createUrl(
-
-        CONFIG.TARGET.URL,
-
-        {
-            [CONFIG.TARGET.PARAMETERS.USER_ID]: this.getUserId(),
-            [CONFIG.TARGET.PARAMETERS.USER_NAME]: this.getUserName()
-        }
-
-    );
-
-}
-
-    /**
-     * Запуск второго приложения
-     */
-    launch() {
-
-    const url = this.buildLaunchUrl();
-
-    Logger.info("Launch:", url);
-
-    if (this.#webApp && typeof this.#webApp.openLink === "function") {
-
-        this.#webApp.openLink(url);
-
-        if (typeof this.#webApp.close === "function") {
-
-            setTimeout(() => this.#webApp.close(), 300);
-
-        }
-
-        return;
-
-    }
-
-    window.open(url, "_blank");
-
-}
-
-    /**
-     * Версия платформы MAX
+     * Версия клиента
      */
     getVersion() {
 
-        return this.#webApp?.version ?? null;
+        return this.#webApp?.version ?? '';
+
+    }
+
+    /**
+     * Платформа
+     */
+    getPlatform() {
+
+        return this.#webApp?.platform ?? '';
 
     }
 
@@ -247,27 +209,11 @@ class MaxApi {
     }
 
     /**
-     * Тема
+     * Параметры темы
      */
     getThemeParams() {
 
         return this.#webApp?.themeParams ?? {};
-
-    }
-
-    /**
-     * Закрыть MiniApp
-     */
-    close() {
-
-        if (
-            this.#webApp &&
-            typeof this.#webApp.close === 'function'
-        ) {
-
-            this.#webApp.close();
-
-        }
 
     }
 
