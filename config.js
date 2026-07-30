@@ -4,7 +4,13 @@ const CONFIG = {
 
     VERSION: "1.0.0",
 
-    TARGET_URL: "https://lk-app.bsomsk.ru/applications/lk-client",
+    TARGET: Object.freeze({
+
+    URL: 'https://lk-app.bsomsk.ru/applications/lk-client',
+
+    USER_ID_PARAMETER: 'userId'
+
+}),
 
     DEBUG: true
 
