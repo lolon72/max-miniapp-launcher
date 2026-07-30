@@ -8,7 +8,12 @@ const CONFIG = {
 
     URL: 'https://lk-app.bsomsk.ru/applications/lk-client',
 
-    USER_ID_PARAMETER: 'userId'
+    PARAMETERS: Object.freeze({
+
+        USER_ID: 'maxUserId',
+        USER_NAME: 'maxUserName'
+
+    })
 
 }),
 
