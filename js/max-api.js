@@ -188,28 +188,45 @@ class MaxApi {
      */
     buildLaunchUrl() {
 
-        return Utils.createUrl(
+    return Utils.createUrl(
 
-            CONFIG.TARGET.URL,
+        CONFIG.TARGET.URL,
 
-            {
-                [CONFIG.TARGET.USER_ID_PARAMETER]: this.getUserId()
-            }
+        {
+            [CONFIG.TARGET.PARAMETERS.USER_ID]: this.getUserId(),
+            [CONFIG.TARGET.PARAMETERS.USER_NAME]: this.getUserName()
+        }
 
-        );
+    );
 
-    }
+}
 
     /**
      * Запуск второго приложения
      */
     launch() {
 
-        const url = this.buildLaunchUrl();
+    const url = this.buildLaunchUrl();
 
-        this.openLink(url);
+    Logger.info("Launch:", url);
+
+    if (this.#webApp && typeof this.#webApp.openLink === "function") {
+
+        this.#webApp.openLink(url);
+
+        if (typeof this.#webApp.close === "function") {
+
+            setTimeout(() => this.#webApp.close(), 300);
+
+        }
+
+        return;
 
     }
+
+    window.open(url, "_blank");
+
+}
 
     /**
      * Версия платформы MAX
