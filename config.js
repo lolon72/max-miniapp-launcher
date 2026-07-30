@@ -4,7 +4,7 @@ const CONFIG = {
 
     VERSION: "1.0.0",
 
-    TARGET_URL: "https://example.ru/app",
+    TARGET_URL: "https://lk-app.bsomsk.ru/applications/lk-client",
 
     DEBUG: true
 
