@@ -23,6 +23,12 @@ const CONFIG = Object.freeze({
 
     }),
 
+    OAUTH: Object.freeze({
+
+    LOGIN_URL: 'https://lk-app.bsomsk.ru/applications/lk-client/api/appmax/login'
+
+    }),
+
     /**
      * Режим разработки
      */
