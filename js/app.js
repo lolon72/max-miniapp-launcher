@@ -56,10 +56,10 @@ class App {
                     : CONFIG.TEXT.MAX_MODE
             );
 
-            this.ui.enableLaunch(() => {
+            this.ui.enableLaunch(async () => {
 
-                this.launch();
-
+                await this.launch();
+            
             });
 
             Logger.info("Application is ready.");
@@ -89,13 +89,13 @@ class App {
     /**
      * Открытие второго приложения
      */
-    launch() {
+    async launch() {
 
         try {
 
             Logger.info("Launching target application...");
 
-            this.maxApi.launch();
+            await this.maxApi.launch();
 
         }
         catch (error) {
