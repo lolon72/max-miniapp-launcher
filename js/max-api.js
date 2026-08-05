@@ -123,63 +123,101 @@ class MaxApi {
     /**
      * Формирование URL запуска
      */
-    buildLaunchUrl() {
+    async requestAuthorizationCode() {
 
-        return Utils.createUrl(
+    Logger.info("Request authorizationCode...");
 
-            'https://lk-app.bsomsk.ru/applications/lk-client',
+    const response = await fetch(
 
-            {
+        CONFIG.OAUTH.LOGIN_URL,
+
+        {
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json"
+
+            },
+
+            body: JSON.stringify({
 
                 maxUserId: this.getUserId(),
 
                 maxUserName: this.getUserName()
 
-            }
+            })
 
-        );
+        }
+
+    );
+
+    if (!response.ok) {
+
+        throw new Error("OAuth login failed.");
 
     }
+
+    const code = await response.text();
+
+    if (!code || code.length !== 32) {
+
+        throw new Error("Invalid authorizationCode.");
+
+    }
+
+    return code;
+
+}
 
     /**
      * Открытие приложения
      */
-    launch() {
+    async launch() {
 
-        const url = this.buildLaunchUrl();
+    const code =
+        await this.requestAuthorizationCode();
 
-        Logger.info('Launch:', url);
+    const url = Utils.createUrl(
 
-        if (
+        "https://lk-app.bsomsk.ru/applications/lk-client",
 
-            this.#webApp &&
-            typeof this.#webApp.openLink === 'function'
+        {
 
-        ) {
-
-            this.#webApp.openLink(url);
-
-            if (
-
-                typeof this.#webApp.close === 'function'
-
-            ) {
-
-                setTimeout(() => {
-
-                    this.#webApp.close();
-
-                }, 300);
-
-            }
-
-            return;
+            code: code
 
         }
 
-        window.open(url, '_blank');
+    );
+
+    Logger.info("Launch:", url);
+
+    if (
+
+        this.#webApp &&
+        typeof this.#webApp.openLink === "function"
+
+    ) {
+
+        this.#webApp.openLink(url);
+
+        if (typeof this.#webApp.close === "function") {
+
+            setTimeout(() => {
+
+                this.#webApp.close();
+
+            }, 300);
+
+        }
+
+        return;
 
     }
+
+    window.open(url, "_blank");
+
+}
 
     /**
      * Версия клиента
