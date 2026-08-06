@@ -31,7 +31,6 @@ class MaxApi {
             this.#user = CONFIG.DEBUG_USER;
 
             return;
-
         }
 
         this.#webApp = window.WebApp;
@@ -39,9 +38,7 @@ class MaxApi {
         try {
 
             if (typeof this.#webApp.ready === "function") {
-
                 this.#webApp.ready();
-
             }
 
             this.#user = this.#readUser();
@@ -68,12 +65,11 @@ class MaxApi {
      */
     #readUser() {
 
-        const user =
-            this.#webApp?.initDataUnsafe?.user ?? null;
+        const user = this.#webApp?.initDataUnsafe?.user ?? null;
 
         if (!user) {
 
-            Logger.warn("User is not available.");
+            Logger.warn("User not available.");
 
             return null;
 
@@ -86,39 +82,27 @@ class MaxApi {
     }
 
     isInitialized() {
-
         return this.#initialized;
-
-    }
-
-    isDebug() {
-
-        return this.#debug;
-
     }
 
     isAvailable() {
-
         return this.#webApp !== null;
+    }
 
+    isDebug() {
+        return this.#debug;
     }
 
     getUser() {
-
         return this.#user;
-
     }
 
     getUserId() {
-
         return this.#user?.id ?? null;
-
     }
 
     getUserName() {
-
         return Utils.getFullName(this.#user);
-
     }
 
     /**
@@ -133,39 +117,25 @@ class MaxApi {
             "https://lk-app.bsomsk.ru/applications/lk-client/api/appmax/login",
 
             {
-
                 maxUserId: this.getUserId(),
-
                 maxUserName: this.getUserName()
-
             }
 
         );
 
-        Logger.debug("OAuth URL:", url);
+        Logger.debug("GET " + url);
 
-        const response = await fetch(
-
-            url,
-
-            {
-
-                method: "GET",
-
-                headers: {
-
-                    "Accept": "application/json"
-
-                }
-
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
             }
-
-        );
+        });
 
         if (!response.ok) {
 
             throw new Error(
-                `OAuth login failed (${response.status})`
+                `HTTP ${response.status}`
             );
 
         }
@@ -195,7 +165,7 @@ class MaxApi {
     }
 
     /**
-     * Открытие личного кабинета
+     * Запуск личного кабинета
      */
     async launch() {
 
@@ -207,28 +177,22 @@ class MaxApi {
             "https://lk-app.bsomsk.ru/applications/lk-client",
 
             {
-
                 code: auth.code
-
             }
 
         );
 
-        Logger.info("Launch:", url);
+        Logger.info("Open:", url);
 
         if (
-
             this.#webApp &&
             typeof this.#webApp.openLink === "function"
-
         ) {
 
             this.#webApp.openLink(url);
 
             if (
-
                 typeof this.#webApp.close === "function"
-
             ) {
 
                 setTimeout(() => {
@@ -248,7 +212,7 @@ class MaxApi {
     }
 
     /**
-     * Версия клиента MAX
+     * Версия клиента
      */
     getVersion() {
 
