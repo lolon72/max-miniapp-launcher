@@ -118,8 +118,7 @@ class MaxApi {
 
             {
                 maxUserId: this.getUserId(),
-                maxUserName: this.getUserName(),
-                _: Date.now()
+                maxUserName: this.getUserName()
             }
 
         );
@@ -127,7 +126,10 @@ class MaxApi {
         Logger.debug("GET " + url);
 
         const response = await fetch(url, {
-            method: "GET"
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
         });
 
         if (!response.ok) {
