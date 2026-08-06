@@ -2,7 +2,7 @@
  * ==========================================================
  * MAX MiniApp Launcher
  * max-api.js
- * Version: 0.1.0
+ * Version: 0.2.0
  * ==========================================================
  */
 
@@ -16,28 +16,29 @@ class MaxApi {
     #user = null;
 
     /**
-     * Инициализация Bridge
+     * Инициализация MAX Bridge
      */
     async initialize() {
 
-        Logger.info('Initializing MAX Bridge...');
+        Logger.info("Initializing MAX Bridge...");
 
-        if (typeof window.WebApp === 'undefined') {
+        if (typeof window.WebApp === "undefined") {
 
-            Logger.warn('MAX Bridge is unavailable.');
+            Logger.warn("MAX Bridge not found. DEBUG mode enabled.");
 
             this.#debug = true;
             this.#initialized = true;
             this.#user = CONFIG.DEBUG_USER;
 
             return;
+
         }
 
         this.#webApp = window.WebApp;
 
         try {
 
-            if (typeof this.#webApp.ready === 'function') {
+            if (typeof this.#webApp.ready === "function") {
 
                 this.#webApp.ready();
 
@@ -47,7 +48,7 @@ class MaxApi {
 
             this.#initialized = true;
 
-            Logger.info('MAX Bridge initialized.');
+            Logger.info("MAX Bridge initialized.");
 
         }
         catch (error) {
@@ -63,7 +64,7 @@ class MaxApi {
     }
 
     /**
-     * Чтение пользователя
+     * Получение пользователя
      */
     #readUser() {
 
@@ -72,13 +73,13 @@ class MaxApi {
 
         if (!user) {
 
-            Logger.warn('User is not available.');
+            Logger.warn("User is not available.");
 
             return null;
 
         }
 
-        Logger.debug(user);
+        Logger.debug("User:", user);
 
         return user;
 
@@ -121,110 +122,137 @@ class MaxApi {
     }
 
     /**
-     * Формирование URL запуска
+     * Получение authorizationCode
      */
     async requestAuthorizationCode() {
 
-    Logger.info("Request authorizationCode...");
+        Logger.info("Request authorizationCode...");
 
-    const response = await fetch(
+        const url = Utils.createUrl(
 
-        CONFIG.OAUTH.LOGIN_URL,
+            "https://lk-app.bsomsk.ru/applications/lk-client/api/appmax/login",
 
-        {
-            method: "POST",
-
-            headers: {
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify({
+            {
 
                 maxUserId: this.getUserId(),
 
                 maxUserName: this.getUserName()
 
-            })
+            }
+
+        );
+
+        Logger.debug("OAuth URL:", url);
+
+        const response = await fetch(
+
+            url,
+
+            {
+
+                method: "GET",
+
+                headers: {
+
+                    "Accept": "application/json"
+
+                }
+
+            }
+
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `OAuth login failed (${response.status})`
+            );
 
         }
 
-    );
+        const result = await response.json();
 
-    if (!response.ok) {
+        Logger.debug("OAuth response:", result);
 
-        throw new Error("OAuth login failed.");
+        if (!result.code) {
+
+            throw new Error(
+                "Authorization code not received."
+            );
+
+        }
+
+        if (result.code.length !== 32) {
+
+            throw new Error(
+                "Invalid authorization code."
+            );
+
+        }
+
+        return result;
 
     }
-
-    const code = await response.text();
-
-    if (!code || code.length !== 32) {
-
-        throw new Error("Invalid authorizationCode.");
-
-    }
-
-    return code;
-
-}
 
     /**
-     * Открытие приложения
+     * Открытие личного кабинета
      */
     async launch() {
 
-    const code =
-        await this.requestAuthorizationCode();
+        const auth =
+            await this.requestAuthorizationCode();
 
-    const url = Utils.createUrl(
+        const url = Utils.createUrl(
 
-        "https://lk-app.bsomsk.ru/applications/lk-client",
+            "https://lk-app.bsomsk.ru/applications/lk-client",
 
-        {
+            {
 
-            code: code
+                code: auth.code
+
+            }
+
+        );
+
+        Logger.info("Launch:", url);
+
+        if (
+
+            this.#webApp &&
+            typeof this.#webApp.openLink === "function"
+
+        ) {
+
+            this.#webApp.openLink(url);
+
+            if (
+
+                typeof this.#webApp.close === "function"
+
+            ) {
+
+                setTimeout(() => {
+
+                    this.#webApp.close();
+
+                }, 300);
+
+            }
+
+            return;
 
         }
 
-    );
-
-    Logger.info("Launch:", url);
-
-    if (
-
-        this.#webApp &&
-        typeof this.#webApp.openLink === "function"
-
-    ) {
-
-        this.#webApp.openLink(url);
-
-        if (typeof this.#webApp.close === "function") {
-
-            setTimeout(() => {
-
-                this.#webApp.close();
-
-            }, 300);
-
-        }
-
-        return;
+        window.location.href = url;
 
     }
 
-    window.open(url, "_blank");
-
-}
-
     /**
-     * Версия клиента
+     * Версия клиента MAX
      */
     getVersion() {
 
-        return this.#webApp?.version ?? '';
+        return this.#webApp?.version ?? "";
 
     }
 
@@ -233,7 +261,7 @@ class MaxApi {
      */
     getPlatform() {
 
-        return this.#webApp?.platform ?? '';
+        return this.#webApp?.platform ?? "";
 
     }
 
@@ -242,7 +270,7 @@ class MaxApi {
      */
     getColorScheme() {
 
-        return this.#webApp?.colorScheme ?? 'light';
+        return this.#webApp?.colorScheme ?? "light";
 
     }
 
