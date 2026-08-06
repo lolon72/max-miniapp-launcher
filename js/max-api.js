@@ -118,7 +118,8 @@ class MaxApi {
 
             {
                 maxUserId: this.getUserId(),
-                maxUserName: this.getUserName()
+                maxUserName: this.getUserName(),
+                _: Date.now()
             }
 
         );
