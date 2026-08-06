@@ -181,7 +181,7 @@ class MaxApi {
             }
 
         );
-window.location.href = url;
+
         Logger.info("Open:", url);
 
         if (
